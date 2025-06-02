@@ -12,49 +12,62 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-  "menus": {
+     "viewsContainers": {
+    "activitybar": [
+      {
+        "id": "devchecklistContainer",
+        "title": "Dev Checklist",
+        "icon": "media/icons/circle-check.svg"
+      }
+    ]
+  },
+  "views": {
+    "devchecklistContainer": [
+      {
+        "id": "devchecklistView",
+        "name": "Checklist",
+        "icon": "media/icons/circle-check.svg"
+      }
+    ]
+  },
+ "menus": {
+  "view/title": [
+    {
+      "command": "devchecklist.addHeader",
+      "when": "view == devchecklistView",
+      "group": "navigation"
+    }
+  ],
   "view/item/context": [
     {
-      "when": "view == devchecklist && viewItem == checklistItem",
-      "command": "devchecklist.toggleCheck",
+      "command": "devchecklist.addItem",
+      "when": "view == devchecklistView && viewItem == checklistHeader",
       "group": "inline"
     },
     {
-      "when": "view == devchecklist && viewItem == checklistItem",
       "command": "devchecklist.deleteItem",
+      "when": "view == devchecklistView",
       "group": "inline"
-    }
-  ],
-  "view/title": [
-    {
-      "command": "devchecklist.addItem",
-      "when": "view == devchecklist",
-      "group": "navigation"
     }
   ]
 },
-     "views": {
-      "explorer": [
-        {
-          "id": "devchecklist",
-          "name": "Dev Checklist",
-          "icon": "media/icons/checked.svg"
-        }
-      ]
-    },
     "commands": [
       {
-        "command": "devchecklist.addItem",
-        "title": "Add Checklist Item"
-      },
-      {
-        "command": "devchecklist.toggleCheck",
-        "title": "Toggle Task Completion"
-      },
-      {
-        "command": "devchecklist.deleteItem",
-        "title": "Delete Checklist Item"
-      }
+      "command": "devchecklist.addHeader",
+      "title": "Add Header",
+       "icon": "$(add)"
+      
+    },
+    {
+      "command": "devchecklist.addItem",
+      "title": "Add Task",
+       "icon": "$(add)"
+    },
+    {
+      "command": "devchecklist.deleteItem",
+      "title": "Delete",
+       "icon": "$(trash)"
+    }
     ]
   },
   "scripts": {

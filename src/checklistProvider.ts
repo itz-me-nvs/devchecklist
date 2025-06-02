@@ -13,82 +13,118 @@ export class ChecklistProvider
 
   getTreeItem(item: ChecklistItem): vscode.TreeItem {
     const treeItem = new vscode.TreeItem(item.label);
+    treeItem.id = item.id;
 
     if (item.isHeader) {
-    treeItem.id = item.id;
-    treeItem.iconPath = new vscode.ThemeIcon("calendar");
-    treeItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-    treeItem.contextValue = "checklistHeader";
-    return treeItem;
-  }
+      treeItem.contextValue = "checklistHeader";
+      treeItem.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+      treeItem.iconPath = new vscode.ThemeIcon("calendar");
+      treeItem.command = undefined;
 
-
-    treeItem.id = item.id;
-    treeItem.contextValue = "checklistItem";
-    treeItem.iconPath = new vscode.ThemeIcon(
-      item.checked ? "check" : "circle-large-outline"
-    );
-    treeItem.command = {
-      command: "devchecklist.toggleCheck",
-      title: "Toggle Check",
-      arguments: [item],
-    };
-    return treeItem;
-  }
-
-  getChildren(): ChecklistItem[] {
-    const storedItems = this.context.workspaceState.get<ChecklistItem[]>(
-      "checklist",
-      []
-    );
-
-    const items = storedItems.filter(i => !i.isHeader);
-    const today = new Date().toLocaleDateString(undefined, {
-         year: "numeric",
-    month: "short",
-    day: "numeric",
+       // Show the date as a description
+    treeItem.description = new Date(item.createdAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
+    } else {
+      treeItem.contextValue = "checklistItem";
+      treeItem.iconPath = new vscode.ThemeIcon(item.checked ? "check" : "circle-large-outline");
+      treeItem.command = {
+        command: "devchecklist.toggleCheck",
+        title: "Toggle Check",
+        arguments: [item],
+      };
+    }
 
-    const header: ChecklistItem = {
-        id: "header_" + new Date().getTime().toString(),
-        label: `Today's Tasks (${today})`,
-        isHeader: true,
-        createdAt: Date.now(),
+    return treeItem;
+  }
 
-    };
-    return [header, ...items];
+   getChildren(element?: ChecklistItem): ChecklistItem[] {
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+    if (!element) {
+      // Root level → return only headers
+      return allItems.filter((item) => item.isHeader);
+    }
+
+    // If a header, return its children
+    return allItems.filter((item) => item.parentId === element.id);
   }
 
   refresh() {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  addItem(label: string) {
-    const items = this.getChildren();
+  addHeader(label: string) {
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+
+    const today = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+
+    const newHeader: ChecklistItem = {
+      id: `header_${Date.now()}`,
+      label,
+      isHeader: true,
+      createdAt: Date.now(),
+      parentId: '0'
+    };
+
+    this.context.workspaceState.update("checklist", [...allItems, newHeader]);
+    this.refresh();
+  }
+
+  addItem(label: string, parentHeaderId: string) {
+    console.log("addeditem", label, parentHeaderId);
+    
+     const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
 
     const newItem: ChecklistItem = {
-      id: Date.now().toString(),
+      id: `item_${Date.now()}`,
       label,
       checked: false,
       createdAt: Date.now(),
       completed: false,
+      isHeader: false,
+      parentId: parentHeaderId,
     };
 
-    this.context.workspaceState.update("checklist", [...items, newItem]);
+    this.context.workspaceState.update("checklist", [...allItems, newItem]);
     this.refresh();
   }
 
   toggleItem(item: ChecklistItem) {
-    const items = this.getChildren().map((el) =>
+    console.log("toggleItem", item);
+    
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+    const items = allItems.map((el) =>
       el.id === item.id ? { ...el, checked: !item.checked } : el
     );
+
+    console.log("items", items);
+    
     this.context.workspaceState.update("checklist", items ?? []);
     this.refresh();
   }
 
   deleteItem(item: ChecklistItem) {
-    const items = this.getChildren().filter((i) => i.id !== item.id);
-    this.context.workspaceState.update("checklist", items);
+    let allItems = this.context.workspaceState.get<ChecklistItem[]>(
+      "checklist",
+      []
+    );
+
+    if (item.isHeader) {
+      allItems = allItems.filter(
+        (el) => el.id !== item.id && el.parentId !== item.id
+      );
+    } else {
+      allItems = allItems.filter((el) => el.id !== item.id);
+    }
+
+    this.context.workspaceState.update("checklist", allItems);
     this.refresh();
   }
 }

@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { ChecklistProvider } from './checklistProvider';
+import { ChecklistItem } from './types';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -9,22 +10,30 @@ export function activate(context: vscode.ExtensionContext) {
 	const checklistProvider = new ChecklistProvider(context);
 
 	// register treedata provider with the extension
-	vscode.window.registerTreeDataProvider("devchecklist", checklistProvider);
+	vscode.window.registerTreeDataProvider("devchecklistView", checklistProvider);
 
 
 	context.subscriptions.push(
-		 vscode.commands.registerCommand('devchecklist.addItem', async () => {
+
+		 vscode.commands.registerCommand("devchecklist.addHeader", async () => {
+      const label = await vscode.window.showInputBox({ prompt: "Enter new header title" });
+      if (label) {
+		checklistProvider.addHeader(label);
+	  }
+    }),
+
+		 vscode.commands.registerCommand('devchecklist.addItem', async (parent: ChecklistItem) => {
       const label = await vscode.window.showInputBox({ prompt: 'Enter new task' });
       if (label) {
-        checklistProvider.addItem(label);
+        checklistProvider.addItem(label, parent.id);
       }
     }),
 
-	vscode.commands.registerCommand('devchecklist.toggleCheck', (item) => {
+	vscode.commands.registerCommand('devchecklist.toggleCheck', (item: ChecklistItem) => {
       checklistProvider.toggleItem(item);
     }),
 
-    vscode.commands.registerCommand('devchecklist.deleteItem', (item) => {
+    vscode.commands.registerCommand('devchecklist.deleteItem', (item: ChecklistItem) => {
       checklistProvider.deleteItem(item);
     })
 	);
