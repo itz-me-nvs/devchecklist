@@ -49,6 +49,18 @@
       "when": "view == devchecklistView",
       "group": "inline"
     }
+    ,
+    {
+      "command": "devchecklist.addTimer",
+      "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItem",
+      "group": "inline"
+    },
+    {
+      "command": "devchecklist.stopTimer",
+      "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItemTimer",
+      "group": "inline"
+    }
+
   ]
 },
     "commands": [
@@ -68,6 +80,18 @@
       "title": "Delete",
        "icon": "$(trash)"
     }
+,
+    {
+      "command": "devchecklist.addTimer",
+      "title": "Start Timer",
+       "icon": "$(debug-start)"
+    },
+    {
+      "command": "devchecklist.stopTimer",
+      "title": "Stop Timer",
+       "icon": "$(debug-stop)"
+    }
+   
     ]
   },
   "scripts": {

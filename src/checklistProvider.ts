@@ -8,6 +8,9 @@ export class ChecklistProvider
     ChecklistItem | undefined
   >();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+  private isTimerRunning = false;
+  private currentTimerItem?: ChecklistItem = undefined;
+  private timerInterval: any;
 
   constructor(private context: vscode.ExtensionContext) {}
 
@@ -21,34 +24,80 @@ export class ChecklistProvider
       treeItem.iconPath = new vscode.ThemeIcon("calendar");
       treeItem.command = undefined;
 
-       // Show the date as a description
-    treeItem.description = new Date(item.createdAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+      // Show the date as a description
+      treeItem.description = new Date(item.createdAt).toLocaleDateString(
+        "en-US",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }
+      );
     } else {
-      treeItem.contextValue = "checklistItem";
-      treeItem.iconPath = new vscode.ThemeIcon(item.checked ? "check" : "circle-large-outline");
+      treeItem.iconPath = new vscode.ThemeIcon(
+        item.checked ? "check" : "circle-large-outline"
+      );
       treeItem.command = {
         command: "devchecklist.toggleCheck",
         title: "Toggle Check",
         arguments: [item],
       };
+
+      const isRunning =
+        this.isTimerRunning && this.currentTimerItem?.id === item.id;
+
+      treeItem.contextValue = isRunning
+        ? "checklistItemTimer"
+        : "checklistItem";
+
+      treeItem.description = item.liveDescription ?? "";
     }
 
     return treeItem;
   }
 
-   getChildren(element?: ChecklistItem): ChecklistItem[] {
-    const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+  getChildren(element?: ChecklistItem): ChecklistItem[] {
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>(
+      "checklist",
+      []
+    );
+
+    // Inject live timer updates into items before rendering
+    const itemsWithLiveTimers = allItems.map((item) => {
+      if (item.timer) {
+        const elapsed = Date.now() - item.timer;
+        const hours = Math.floor(elapsed / (1000 * 60 * 60));
+        const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+        return {
+          ...item,
+          label: item.label,
+          liveDescription: `${hours}h ${minutes}m ${seconds}s`,
+        };
+      } else if (item.startTime && item.endTime) {
+        const elapsed = item.endTime - item.startTime;
+        const hours = Math.floor(elapsed / (1000 * 60 * 60));
+        const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+        return {
+          ...item,
+          label: item.label,
+          liveDescription: `${hours}h ${minutes}m ${seconds}s`,
+        };
+      }
+      return {
+        ...item,
+        liveDescription: "",
+      };
+    });
+
     if (!element) {
       // Root level → return only headers
-      return allItems.filter((item) => item.isHeader);
+      return itemsWithLiveTimers.filter((item) => item.isHeader);
     }
 
     // If a header, return its children
-    return allItems.filter((item) => item.parentId === element.id);
+    return itemsWithLiveTimers.filter((item) => item.parentId === element.id);
   }
 
   refresh() {
@@ -56,7 +105,10 @@ export class ChecklistProvider
   }
 
   addHeader(label: string) {
-    const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>(
+      "checklist",
+      []
+    );
 
     const today = new Date().toLocaleDateString("en-US", {
       year: "numeric",
@@ -64,13 +116,12 @@ export class ChecklistProvider
       day: "numeric",
     });
 
-
     const newHeader: ChecklistItem = {
       id: `header_${Date.now()}`,
       label,
       isHeader: true,
       createdAt: Date.now(),
-      parentId: '0'
+      parentId: "0",
     };
 
     this.context.workspaceState.update("checklist", [...allItems, newHeader]);
@@ -79,8 +130,11 @@ export class ChecklistProvider
 
   addItem(label: string, parentHeaderId: string) {
     console.log("addeditem", label, parentHeaderId);
-    
-     const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>(
+      "checklist",
+      []
+    );
 
     const newItem: ChecklistItem = {
       id: `item_${Date.now()}`,
@@ -98,14 +152,17 @@ export class ChecklistProvider
 
   toggleItem(item: ChecklistItem) {
     console.log("toggleItem", item);
-    
-    const allItems = this.context.workspaceState.get<ChecklistItem[]>("checklist", []);
+
+    const allItems = this.context.workspaceState.get<ChecklistItem[]>(
+      "checklist",
+      []
+    );
     const items = allItems.map((el) =>
       el.id === item.id ? { ...el, checked: !item.checked } : el
     );
 
     console.log("items", items);
-    
+
     this.context.workspaceState.update("checklist", items ?? []);
     this.refresh();
   }
@@ -125,6 +182,54 @@ export class ChecklistProvider
     }
 
     this.context.workspaceState.update("checklist", allItems);
+    this.refresh();
+  }
+
+  addTimer(item: ChecklistItem) {
+    if (this.isTimerRunning && this.currentTimerItem?.id !== item.id) {
+      vscode.window.showInformationMessage(
+        "You can only have one timer running at a time"
+      );
+      return;
+    }
+
+    let allItems = this.context.workspaceState.get<ChecklistItem[]>(
+      "checklist",
+      []
+    );
+
+    if (this.currentTimerItem && this.currentTimerItem.id === item.id) {
+      this.isTimerRunning = false;
+      item.endTime = Date.now();
+      item.timer = undefined;
+      this.currentTimerItem = undefined;
+
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+    } else {
+      this.isTimerRunning = true;
+      item.timer = Date.now();
+      item.startTime = item.timer;
+      this.currentTimerItem = item;
+
+      this.timerInterval = setInterval(() => {
+        if (this.isTimerRunning) {
+          this._onDidChangeTreeData.fire(undefined);
+        }
+      }, 1000);
+    }
+
+    const items = allItems.map((el) => {
+      if (el.id === item.id) {
+        return { ...item };
+      }
+
+      return el;
+    });
+
+    this.context.workspaceState.update("checklist", items);
     this.refresh();
   }
 }

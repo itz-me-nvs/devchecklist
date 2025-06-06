@@ -8,4 +8,11 @@ export interface ChecklistItem {
     createdAt: number;
     isHeader?: boolean;
     parentId: string; // parent id of the item
+    timer?: number;
+    startTime?: number;
+    endTime?: number;
+    liveDescription?: string;
 }
+
+
+
