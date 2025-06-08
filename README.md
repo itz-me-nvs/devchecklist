@@ -18,13 +18,13 @@
 ## 📸 Preview
 
 ### ✍️ Add Checklist Items
-![Add Checklist](https://github.com/itz-me-nvs/devchecklist/blob/master/media/icons/gifs/add%20checklist.gif)
+![Add Checklist](media/icons/gifs/add%20checklist.gif)
 
 ### 🔁 Change Status (Complete / In Progress)
-![Change Status](https://github.com/itz-me-nvs/devchecklist/blob/master/media/icons/gifs/status%20update.gif)
+![Change Status](media/icons/gifs/status%20update.gif)
 
 ### ⏱️ Timer Start/Stop for Tasks
-![Timer Feature](https://github.com/itz-me-nvs/devchecklist/blob/master/media/icons/gifs/timer.gif)
+![Timer Feature](media/icons/gifs/timer.gif)
 
 ---
 
