@@ -18,17 +18,17 @@
 ## 📸 Preview
 
 ### ✍️ Add Checklist Items
-![Add Checklist](media/icons/gifs/add%20checklist.gif)
+![Add Checklist](media/icons/gifs/addChecklist.gif)
 
 ### 🔁 Change Status (Complete / In Progress)
-![Change Status](media/icons/gifs/status%20update.gif)
+![Change Status](media/icons/gifs/statusUpdate.gif)
 
 ### ⏱️ Timer Start/Stop for Tasks
 ![Timer Feature](media/icons/gifs/timer.gif)
 
 ---
 
-## 🛠️ Usage
+## 🛠️ Usages
 
 1. Open the Command Palette: `Ctrl + Shift + P`
 2. Search for `Dev Checklist: Open Checklist`

@@ -2,7 +2,7 @@
   "name": "Devchecklist",
   "displayName": "Dev Checklist",
   "description": "DevChecklist is a lightweight yet powerful task management extension designed specifically for developers and students working inside Visual Studio Code. It helps you organize daily tasks, track time, and stay productive—all without leaving your editor.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "icon": "checklist.png",
   "engines": {
     "vscode": "^1.100.0"
@@ -11,10 +11,6 @@
     "Other"
   ],
   "publisher": "codewithnavas",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/itz-me-nvs/devchecklist.git"
-  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
