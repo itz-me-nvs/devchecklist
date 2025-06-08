@@ -2,7 +2,7 @@
   "name": "Devchecklist",
   "displayName": "Dev Checklist",
   "description": "DevChecklist is a lightweight yet powerful task management extension designed specifically for developers and students working inside Visual Studio Code. It helps you organize daily tasks, track time, and stay productive—all without leaving your editor.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icon": "checklist.png",
   "engines": {
     "vscode": "^1.100.0"
@@ -14,86 +14,81 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-     "viewsContainers": {
-    "activitybar": [
-      {
-        "id": "devchecklistContainer",
-        "title": "Dev Checklist",
-        "icon": "checklist.png"
-      }
-    ]
-  },
-  "views": {
-    "devchecklistContainer": [
-      {
-        "id": "devchecklistView",
-        "name": "Checklist",
-        "icon": "media/icons/circle-check.svg"
-      }
-    ]
-  },
- "menus": {
-  "view/title": [
-    {
-      "command": "devchecklist.addHeader",
-      "when": "view == devchecklistView",
-      "group": "navigation"
-    }
-  ],
-  "view/item/context": [
-    {
-      "command": "devchecklist.addItem",
-      "when": "view == devchecklistView && viewItem == checklistHeader",
-      "group": "inline"
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devchecklistContainer",
+          "title": "Dev Checklist",
+          "icon": "checklist.png"
+        }
+      ]
     },
-    {
-      "command": "devchecklist.deleteItem",
-      "when": "view == devchecklistView",
-      "group": "inline"
-    }
-    ,
-    {
-      "command": "devchecklist.addTimer",
-      "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItem",
-      "group": "inline"
+    "views": {
+      "devchecklistContainer": [
+        {
+          "id": "devchecklistView",
+          "name": "Checklist",
+          "icon": "media/icons/circle-check.svg"
+        }
+      ]
     },
-    {
-      "command": "devchecklist.stopTimer",
-      "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItemTimer",
-      "group": "inline"
-    }
-
-  ]
-},
+    "menus": {
+      "view/title": [
+        {
+          "command": "devchecklist.addHeader",
+          "when": "view == devchecklistView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "devchecklist.addItem",
+          "when": "view == devchecklistView && viewItem == checklistHeader",
+          "group": "inline"
+        },
+        {
+          "command": "devchecklist.deleteItem",
+          "when": "view == devchecklistView",
+          "group": "inline"
+        },
+        {
+          "command": "devchecklist.addTimer",
+          "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItem",
+          "group": "inline"
+        },
+        {
+          "command": "devchecklist.stopTimer",
+          "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItemTimer",
+          "group": "inline"
+        }
+      ]
+    },
     "commands": [
       {
-      "command": "devchecklist.addHeader",
-      "title": "Add Header",
-       "icon": "$(add)"
-      
-    },
-    {
-      "command": "devchecklist.addItem",
-      "title": "Add Task",
-       "icon": "$(add)"
-    },
-    {
-      "command": "devchecklist.deleteItem",
-      "title": "Delete",
-       "icon": "$(trash)"
-    }
-,
-    {
-      "command": "devchecklist.addTimer",
-      "title": "Start Timer",
-       "icon": "$(debug-start)"
-    },
-    {
-      "command": "devchecklist.stopTimer",
-      "title": "Stop Timer",
-       "icon": "$(debug-stop)"
-    }
-   
+        "command": "devchecklist.addHeader",
+        "title": "Add Header",
+        "icon": "$(add)"
+      },
+      {
+        "command": "devchecklist.addItem",
+        "title": "Add Task",
+        "icon": "$(add)"
+      },
+      {
+        "command": "devchecklist.deleteItem",
+        "title": "Delete",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "devchecklist.addTimer",
+        "title": "Start Timer",
+        "icon": "$(debug-start)"
+      },
+      {
+        "command": "devchecklist.stopTimer",
+        "title": "Stop Timer",
+        "icon": "$(debug-stop)"
+      }
     ]
   },
   "scripts": {
