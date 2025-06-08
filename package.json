@@ -11,6 +11,10 @@
     "Other"
   ],
   "publisher": "codewithnavas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itz-me-nvs/devchecklist.git"
+  },
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
