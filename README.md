@@ -17,7 +17,14 @@
 
 ## 📸 Preview
 
-![Checklist UI](https://user-images.githubusercontent.com/your-screenshot-link.png)
+### ✍️ Add Checklist Items
+![Add Checklist](https://github.com/itz-me-nvs/devchecklist/blob/master/media/icons/gifs/add%20checklist.gif)
+
+### 🔁 Change Status (Complete / In Progress)
+![Change Status](https://github.com/itz-me-nvs/devchecklist/blob/master/media/icons/gifs/status%20update.gif)
+
+### ⏱️ Timer Start/Stop for Tasks
+![Timer Feature](https://github.com/itz-me-nvs/devchecklist/blob/master/media/icons/gifs/timer.gif)
 
 ---
 
@@ -33,11 +40,11 @@ You can also access the checklist in the sidebar view.
 
 ## 🧑‍💻 Developer Commands
 
-| Command | Description |
-|--------|-------------|
-| `Dev Checklist: Add Item` | Adds a new task to the checklist |
-| `Dev Checklist: Start Timer` | Starts a timer for a checklist item |
-| `Dev Checklist: Reset Checklist` | Clears all checklist items |
+| Command                          | Description                              |
+|----------------------------------|------------------------------------------|
+| `Dev Checklist: Add Item`        | Adds a new task to the checklist         |
+| `Dev Checklist: Start Timer`     | Starts a timer for a checklist item      |
+| `Dev Checklist: Reset Checklist` | Clears all checklist items               |
 
 ---
 
@@ -49,5 +56,4 @@ Coming soon: customize themes, checklist groups, and timer durations.
 
 ## 📂 Folder Structure
 
-
-
+_Example structure if using a media folder:_
