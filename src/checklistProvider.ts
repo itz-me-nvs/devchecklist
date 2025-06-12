@@ -21,18 +21,36 @@ export class ChecklistProvider
     if (item.isHeader) {
       treeItem.contextValue = "checklistHeader";
       treeItem.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
-      treeItem.iconPath = new vscode.ThemeIcon("calendar");
-      treeItem.command = undefined;
 
-      // Show the date as a description
-      treeItem.description = new Date(item.createdAt).toLocaleDateString(
-        "en-US",
-        {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }
-      );
+   const iconBasePath = this.context.asAbsolutePath("media/icons");
+
+switch (item.progressStatus) {
+  case "complete":
+    treeItem.iconPath = {
+      light: vscode.Uri.file(`${iconBasePath}/complete.svg`),
+      dark: vscode.Uri.file(`${iconBasePath}/complete.svg`),
+    };
+    break;
+  case "incomplete":
+    treeItem.iconPath = {
+      light: vscode.Uri.file(`${iconBasePath}/incomplete.svg`),
+      dark: vscode.Uri.file(`${iconBasePath}/incomplete.svg`),
+    };
+    break;
+  case "empty":
+    treeItem.iconPath = {
+      light: vscode.Uri.file(`${iconBasePath}/empty.svg`),
+      dark: vscode.Uri.file(`${iconBasePath}/empty.svg`),
+    };
+    break;
+
+    default:
+      treeItem.iconPath = new vscode.ThemeIcon("calendar");
+      break;
+}
+
+      treeItem.command = undefined;
+      treeItem.description = item.liveDescription ?? ""; // Show the date as a description
     } else {
       treeItem.iconPath = new vscode.ThemeIcon(
         item.checked ? "check" : "circle-large-outline"
@@ -87,13 +105,34 @@ export class ChecklistProvider
       }
       return {
         ...item,
+        label: item.label,
         liveDescription: "",
       };
     });
 
     if (!element) {
       // Root level → return only headers
-      return itemsWithLiveTimers.filter((item) => item.isHeader);
+      return itemsWithLiveTimers.filter((item) => item.isHeader).map((item)=> {
+        const completed = itemsWithLiveTimers.filter(child => child.parentId === item.id && child.checked).length;
+        const total = itemsWithLiveTimers.filter(child => child.parentId === item.id).length;
+        const descDate = new Date(item.createdAt).toLocaleDateString(
+        "en-US",
+        {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }
+      );
+      // const status = total > 0 ? Math.round((completed / total) * 100) : 0;
+      // const progressIcon = status === 100 ? "✅" : status > 0 ? "🟡" : "⬜";
+        return { 
+          ...item,
+          label: item.label ,
+          liveDescription: descDate,
+          progressStatus:
+        total === 0 ? "none" : completed === total ? "complete" : completed > 0 ? "incomplete" : "empty",
+        };
+      });
     }
 
     // If a header, return its children

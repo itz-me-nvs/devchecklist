@@ -12,6 +12,8 @@ export interface ChecklistItem {
     startTime?: number;
     endTime?: number;
     liveDescription?: string;
+    // Optional metadata
+  progressStatus?: "complete" | "incomplete" | "empty" | "none";
 }
 
 
