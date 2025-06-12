@@ -15,6 +15,10 @@
     "type": "git",
     "url": "https://github.com/itz-me-nvs/devchecklist.git"
   },
+  "files": [
+    "CHANGELOG.md",
+    "README.md"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
