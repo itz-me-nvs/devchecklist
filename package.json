@@ -2,7 +2,7 @@
   "name": "Devchecklist",
   "displayName": "Dev Checklist",
   "description": "DevChecklist is a lightweight yet powerful task management extension designed specifically for developers and students working inside Visual Studio Code. It helps you organize daily tasks, track time, and stay productive—all without leaving your editor.",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "icon": "checklist.png",
   "engines": {
     "vscode": "^1.100.0"
@@ -15,10 +15,6 @@
     "type": "git",
     "url": "https://github.com/itz-me-nvs/devchecklist.git"
   },
-  "files": [
-    "CHANGELOG.md",
-    "README.md"
-  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
@@ -26,7 +22,7 @@
       "activitybar": [
         {
           "id": "devchecklistContainer",
-          "title": "Dev Checklist",
+          "title": "Dev Checklist ",
           "icon": "checklist.png"
         }
       ]
@@ -35,7 +31,7 @@
       "devchecklistContainer": [
         {
           "id": "devchecklistView",
-          "name": "Checklist",
+          "name": "",
           "icon": "media/icons/circle-check.svg"
         }
       ]
@@ -46,28 +42,37 @@
           "command": "devchecklist.addHeader",
           "when": "view == devchecklistView",
           "group": "navigation"
+        },
+        {
+          "command": "devchecklist.importFile",
+          "when": "view == devchecklistView",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "devchecklist.addItem",
           "when": "view == devchecklistView && viewItem == checklistHeader",
-          "group": "inline"
+          "group": "inline@1"
         },
         {
-          "command": "devchecklist.deleteItem",
-          "when": "view == devchecklistView",
-          "group": "inline"
+          "command": "devchecklist.editItem",
+           "when": "view == devchecklistView",
+          "group": "inline@2"
         },
         {
           "command": "devchecklist.addTimer",
           "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItem",
-          "group": "inline"
+          "group": "inline@3"
         },
         {
           "command": "devchecklist.stopTimer",
           "when": "view == devchecklistView && viewItem != checklistHeader && viewItem == checklistItemTimer",
-          "group": "inline"
+          "group": "inline@4"
+        },{
+          "command": "devchecklist.deleteItem",
+          "when": "view == devchecklistView",
+          "group": "inline@5"
         }
       ]
     },
@@ -75,16 +80,28 @@
       {
         "command": "devchecklist.addHeader",
         "title": "Add Header",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "category": "Dev Checklist"
       },
       {
         "command": "devchecklist.addItem",
         "title": "Add Task",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "category": "Dev Checklist"
+      },
+        {
+        "command": "devchecklist.editItem",
+        "title": "Edit Task",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "devchecklist.stopTimer",
+        "title": "Stop Timer",
+        "icon": "$(debug-stop)"
       },
       {
         "command": "devchecklist.deleteItem",
-        "title": "Delete",
+        "title": "Delete Task",
         "icon": "$(trash)"
       },
       {
@@ -93,9 +110,10 @@
         "icon": "$(debug-start)"
       },
       {
-        "command": "devchecklist.stopTimer",
-        "title": "Stop Timer",
-        "icon": "$(debug-stop)"
+        "command": "devchecklist.importFile",
+        "title": "Import File",
+        "shortTitle": " IMPORT ",
+        "category": "Dev Checklist"
       }
     ]
   },

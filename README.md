@@ -4,7 +4,15 @@
 
 ---
 
-## 🚀 Features
+
+## 💻 New Features
+
+- 🖍 checklist edit option.
+- 🕒 task timer functionality changes.
+- ⭐ Import csv and json files for tasks.
+
+
+## 🚀 Extension Usages
 
 - ✅ Create and manage custom checklists
 - 🕒 Built-in timer for time-bound tasks
@@ -43,17 +51,11 @@ You can also access the checklist in the sidebar view.
 | Command                          | Description                              |
 |----------------------------------|------------------------------------------|
 | `Dev Checklist: Add Item`        | Adds a new task to the checklist         |
-| `Dev Checklist: Start Timer`     | Starts a timer for a checklist item      |
-| `Dev Checklist: Reset Checklist` | Clears all checklist items               |
+| `Dev Checklist: Import CSV/JSON` | Imports tasks from CSV or JSON file      |
+| `Dev Checklist: Add header`      | Adds a new header to the checklist       |
 
 ---
 
-## 🔧 Extension Settings
+## 🔧 Coming Soon
 
-Coming soon: customize themes, checklist groups, and timer durations.
-
----
-
-## 📂 Folder Structure
-
-_Example structure if using a media folder:_
+Coming soon: Asana/JIRA service integration (sync), Pomodoro timer, export to PDF, and more!

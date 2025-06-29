@@ -34,6 +34,13 @@ export function activate(context: vscode.ExtensionContext) {
     ),
 
     vscode.commands.registerCommand(
+      "devchecklist.editItem",
+      (item: ChecklistItem) => {
+        checklistProvider.editItem(item);
+      }
+    ),
+
+    vscode.commands.registerCommand(
       "devchecklist.toggleCheck",
       (item: ChecklistItem) => {
         checklistProvider.toggleItem(item);
@@ -57,6 +64,28 @@ export function activate(context: vscode.ExtensionContext) {
       "devchecklist.stopTimer",
       (item: ChecklistItem) => {
         checklistProvider.addTimer(item);
+      }
+    ),
+    vscode.commands.registerCommand(
+      "devchecklist.importFile",
+      async ()=> {
+        const fileUrl = await vscode.window.showOpenDialog(
+          {
+            canSelectMany: false,
+            filters: {
+      'CSV Files': ['csv'],
+      'JSON Files': ['json'],
+      'All Files': ['csv', 'json']
+    }
+          }
+
+        );
+
+        if(fileUrl && fileUrl[0]){
+          console.log("filePath:", fileUrl[0].fsPath);
+          checklistProvider.importFile(fileUrl[0].fsPath);
+        }
+
       }
     )
   );
